@@ -1,6 +1,5 @@
 import * as coda from "@codahq/packs-sdk";
 import * as js2flowchart from "js2flowchart";
-import { listenerCount } from "process";
 export const pack = coda.newPack();
 
 pack.addFormula({
@@ -17,27 +16,26 @@ pack.addFormula({
             name: "theme",
             description: "The theme for your flowchart.",
             optional: true,
-            autocomplete: ["DEFAULT", "GRAY", "LIGHT"]
         }),
         coda.makeParameter({
             type: coda.ParameterType.StringArray,
             name: "abstraction",
             description: "The abstraction levels to render.",
-            optional: true,
-            suggestedValue: ["IMPORT", "EXPORT"],
+            optional: true
         }),
     ],
     resultType: coda.ValueType.String,
     codaType: coda.ValueHintType.ImageReference,
-    execute: async function ([code, theme = "DEFAULT", abstraction], context) {
+    execute: async function ([code, theme, abstraction], context) {
         const { ABSTRACTION_LEVELS, createFlowTreeBuilder, createSVGRender } = js2flowchart;
 
         const svgRender = createSVGRender();
+
         if (theme !== undefined) {
             const themeOptions = ["DEFAULT", "GRAY", "LIGHT"];
 
             if (!themeOptions.includes(theme)) {
-                throw new coda.UserVisibleError("Unknown value: " + abstraction);
+                throw new coda.UserVisibleError("Unknown value: " + theme);
             }
 
             if (theme === "GRAY") {
@@ -50,6 +48,7 @@ pack.addFormula({
         }
 
         const flowTreeBuilder = createFlowTreeBuilder();
+        
         if (abstraction !== undefined) {
             let abs = [];
             if (abstraction.includes("FUNCTION")) abs.push(ABSTRACTION_LEVELS.FUNCTION);
