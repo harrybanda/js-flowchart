@@ -9,7 +9,7 @@ pack.addFormula({
         coda.makeParameter({
             type: coda.ParameterType.String,
             name: "code",
-            description: "The Javascript code you want to turn to convert to a flowchart.",
+            description: "The Javascript code you want to convert to a flowchart.",
         }),
         coda.makeParameter({
             type: coda.ParameterType.String,
@@ -32,7 +32,7 @@ pack.addFormula({
         const svgRender = createSVGRender();
 
         if (theme !== undefined) {
-            const themeOptions = ["DEFAULT", "GRAY", "LIGHT"];
+            const themeOptions = ["DEFAULT", "GRAY", "LIGHT", "OUTLINE"];
 
             if (!themeOptions.includes(theme)) {
                 throw new coda.UserVisibleError("Unknown value: " + theme);
@@ -42,13 +42,15 @@ pack.addFormula({
                 svgRender.applyBlackAndWhiteTheme();
             } else if (theme === "LIGHT") {
                 svgRender.applyLightTheme();
+            } else if (theme === "OUTLINE") {
+                createOutline(svgRender);
             } else {
                 svgRender.applyDefaultTheme();
             }
         }
 
         const flowTreeBuilder = createFlowTreeBuilder();
-        
+
         if (abstraction !== undefined) {
             let abs = [];
             if (abstraction.includes("FUNCTION")) abs.push(ABSTRACTION_LEVELS.FUNCTION);
@@ -68,3 +70,26 @@ pack.addFormula({
     },
 });
 
+function createOutline(svgRender) {
+    return svgRender.applyColorBasedTheme({
+        strokeColor: '#000',
+        defaultFillColor: '#fff',
+        textColor: '#000',
+        arrowFillColor: '#000',
+        rectangleFillColor: '#fff',
+        rectangleDotFillColor: '#fff',
+        functionFillColor: '#fff',
+        rootCircleFillColor: '#fff',
+        loopFillColor: '#fff',
+        conditionFillColor: '#fff',
+        destructedNodeFillColor: '#fff',
+        classFillColor: '#fff',
+        debuggerFillColor: '#fff',
+        exportFillColor: '#fff',
+        throwFillColor: '#fff',
+        tryFillColor: '#fff',
+        objectFillColor: '#fff',
+        callFillColor: '#fff',
+        debugModeFillColor: '#fff'
+    });
+}
